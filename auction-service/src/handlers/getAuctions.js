@@ -5,7 +5,6 @@ import validator from '@middy/validator';
 import commonMiddleware from "../lib/commonMiddleware";
 import getAuctionsSchema from "../lib/schemas/getAuctionsSchema";
 
-
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 async function getAuctions(event, context) {
