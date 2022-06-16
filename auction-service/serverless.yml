@@ -3,6 +3,8 @@ service: auction-service
 plugins:
   - serverless-bundle
   - serverless-pseudo-parameters
+  - serverless-offline
+  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -12,8 +14,10 @@ provider:
   region: us-east-1
   environment:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
-  iamRoleStatements:
-    - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+  iam:
+    role:
+        statements:
+          - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
 
 resources:
   Resources:
@@ -26,6 +30,24 @@ functions:
       - http:
           method: POST
           path: /auction
+  getAuctions:
+    handler: src/handlers/getAuctions.handler
+    events:
+      - http:
+          method: GET
+          path: /auctions
+  getAuction:
+    handler: src/handlers/getAuction.handler
+    events:
+      - http:
+          method: GET
+          path: /auction/{id}
+  placeBid:
+    handler: src/handlers/placeBid.handler
+    events:
+      - http:
+          method: PATCH
+          path: auction/{id}/bid
 
 custom:
   AuctionsTable:
