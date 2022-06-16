@@ -16,8 +16,8 @@ provider:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
   iam:
     role:
-        statements:
-          - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+      statements:
+        - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
 
 resources:
   Resources:
