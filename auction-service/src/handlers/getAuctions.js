@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import validator from '@middy/validator';
 
 import commonMiddleware from "../lib/commonMiddleware";
-import * as inputSchema from "../lib/schemas/getAuctionsSchema";
+import getAuctionsSchema from "../lib/schemas/getAuctionsSchema";
 
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -39,4 +39,12 @@ async function getAuctions(event, context) {
     };
 }
 
-export const handler = commonMiddleware(getAuctions).use(validator({inputSchema}));
+export const handler = commonMiddleware(getAuctions)
+    .use(validator(
+        {
+            inputSchema: getAuctionsSchema,
+            ajvOptions: {
+                useDefaults: true
+            }
+        }
+    ));
