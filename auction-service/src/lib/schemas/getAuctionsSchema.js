@@ -1,4 +1,4 @@
-const getAuctionSchema = {
+const getAuctionsSchema = {
     type: 'object',
     properties: {
         queryStringParameters: {
@@ -9,10 +9,11 @@ const getAuctionSchema = {
                     enum: ['OPEN', 'CLOSED'],
                     default: 'OPEN'
                 },
-            }
+            },
+            required: ['status']
         }
     },
     required: ['queryStringParameters']
 }
 
-export default getAuctionSchema;
+export default getAuctionsSchema;
