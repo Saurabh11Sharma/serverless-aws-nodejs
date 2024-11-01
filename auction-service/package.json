@@ -5,7 +5,8 @@
   "author": "Saurabh Sharma <saurabh11sharma@live.com>",
   "license": "MIT",
   "scripts": {
-    "start": "serverless offline"
+    "start": "serverless offline",
+    "test:api": "artillery run artillery.yml"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.682.0",

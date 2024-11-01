@@ -1,0 +1,229 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Auction Service",
+    "description": "API Endpoints for managing auctions",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/dev"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Auction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+          },
+          "title": {
+            "type": "string",
+            "example": "Auction_xyz123"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-01T16:56:34.901Z"
+          },
+          "endingAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-01T17:56:34.901Z"
+          },
+          "amount": {
+            "type": "number",
+            "example": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": ["OPEN", "CLOSED"],
+            "example": "OPEN"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auction": {
+      "post": {
+        "summary": "Create Auction",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Auction_xyz123"
+                  }
+                },
+                "required": ["title"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Auction created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auction"
+                },
+                "example": {
+                  "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+                  "status": "OPEN",
+                  "createdAt": "2024-11-01T16:56:34.901Z",
+                  "amount": 0,
+                  "endingAt": "2024-11-01T17:56:34.901Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auction/{id}": {
+      "get": {
+        "summary": "Get Auction by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Auction details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auction"
+                },
+                "example": {
+                  "createdAt": "2024-11-01T16:56:34.901Z",
+                  "endingAt": "2024-11-01T17:56:34.901Z",
+                  "amount": 0,
+                  "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+                  "status": "OPEN"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auction/{id}/bid": {
+      "patch": {
+        "summary": "Place Bid",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "example": 152
+                  }
+                },
+                "required": ["amount"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bid placed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auction"
+                },
+                "example": {
+                  "createdAt": "2024-11-01T16:56:34.901Z",
+                  "endingAt": "2024-11-01T17:56:34.901Z",
+                  "amount": 152,
+                  "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+                  "status": "OPEN"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auctions": {
+      "get": {
+        "summary": "Get All Auctions",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["OPEN", "CLOSED"],
+              "default": "OPEN",
+              "example": "OPEN"
+            },
+            "description": "Filter by status (OPEN or CLOSED)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of auctions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Auction"
+                  }
+                },
+                "example": [
+                  {
+                    "createdAt": "2024-11-01T16:56:34.901Z",
+                    "endingAt": "2024-11-01T17:56:34.901Z",
+                    "amount": 0,
+                    "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+                    "status": "OPEN"
+                  },
+                  {
+                    "createdAt": "2024-11-01T16:56:33.925Z",
+                    "endingAt": "2024-11-01T17:56:33.925Z",
+                    "amount": 0,
+                    "id": "0e93f1a9-66fe-40c7-aa3a-1aae64103f1c",
+                    "status": "OPEN"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -50,29 +50,40 @@ functions:
       - http:
           method: post
           path: /auction
+          cors: true
   getAuctions:
     handler: src/handlers/getAuctions.handler
     events:
       - http:
           method: get
           path: /auctions
+          cors: true
   getAuction:
     handler: src/handlers/getAuction.handler
     events:
       - http:
           method: get
           path: /auction/{id}
+          cors: true
   placeBid:
     handler: src/handlers/placeBid.handler
     events:
       - http:
           method: patch
           path: /auction/{id}/bid
+          cors: true
   processAuctions:
     handler: src/handlers/processAuctions.handler
     events:
       - schedule:
           rate: rate(1 minute)
+  swaggerUI:
+    handler: src/helpers/swaggerUI.handler
+    events:
+      - http:
+          path: /api-docs
+          method: get
+          cors: true
 
 custom:
   auctionsTable: AuctionsTable

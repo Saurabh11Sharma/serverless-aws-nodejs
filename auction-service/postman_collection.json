@@ -1,0 +1,116 @@
+{
+	"info": {
+		"name": "Auction Service Postman Collection",
+		"description": "Collection for testing Auction Service API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Auction",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/dev/auction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"dev",
+						"auction"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Auction_xyz123\"\n}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Auction by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/dev/auction/a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"dev",
+						"auction",
+						"a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Place Bid",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/dev/auction/a56da6e7-4aa5-4a48-9b74-653ef439e6ef/bid",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"dev",
+						"auction",
+						"a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+						"bid"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 152\n}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Auctions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/dev/auctions?status=OPEN",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"dev",
+						"auctions"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "OPEN"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,73 @@
+config:
+  target: "http://localhost:3000/dev"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 20
+      name: "Sustained load"
+    - duration: 60
+      arrivalRate: 5
+      name: "Cool down"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+  reports:
+    # Enable the creation of a JUnit-formatted XML report
+    writer: @artillery/junit
+scenarios:
+  - name: "Create Auction"
+    flow:
+      - log: "Creating a new auction"
+      - function: |
+          function randomTitle(context, events, done) {
+            context.vars.title = "Auction_" + Math.random().toString(36).substring(7);
+            return done();
+          }
+      - post:
+          url: "/auction"
+          json:
+            title: "{{ title }}"
+          capture:
+            - json: "$.id"
+              as: "auctionId"
+      - log: "Created Auction with ID {{ auctionId }} and Title {{ title }}"
+
+  - name: "Get Auction by ID"
+    flow:
+      - log: "Getting auction by ID"
+      - get:
+          url: "/auction/{{ auctionId }}"
+          expect:
+            statusCode: 200
+      - log: "Fetched Auction with ID {{ auctionId }}"
+
+  - name: "Place Bid"
+    flow:
+      - log: "Placing a bid on auction"
+      - function: |
+          function randomAmount(context, events, done) {
+            context.vars.amount = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
+            return done();
+          }
+      - patch:
+          url: "/auction/{{ auctionId }}/bid"
+          json:
+            amount: "{{ amount }}"
+          expect:
+            statusCode: 200
+      - log: "Placed a bid of {{ amount }} on Auction with ID {{ auctionId }}"
+
+  - name: "Get All Auctions"
+    weight: 2
+    flow:
+      - log: "Getting all auctions"
+      - get:
+          url: "/auctions?status=OPEN"
+          expect:
+            statusCode: 200
+          capture:
+            - json: "$[0].id"
+              as: "auctionId"
+      - log: "Fetched all open auctions and capturing first auction's ID as {{ auctionId }}"
