@@ -1,49 +1,49 @@
-import AWS from 'aws-sdk';
-import createError from 'http-errors';
-import validator from '@middy/validator';
+require('dotenv').config();
+const createError = require('http-errors');
+const commonMiddleware = require('../lib/commonMiddleware.js');
 
-import commonMiddleware from "../lib/commonMiddleware";
-import getAuctionsSchema from "../lib/schemas/getAuctionsSchema";
+const client = require('../config/dynamoDBClient');
+const { ScanCommand, DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = DynamoDBDocumentClient.from(client);
 
-async function getAuctions(event, context) {
+async function getAuctions(event) {
+    const { status } = event.queryStringParameters || {};
 
-    let auctions;
-
-    const {status} = event.queryStringParameters;
-
-    try {
-        const result = await dynamoDB.query({
-            TableName: process.env.AUCTIONS_TABLE_NAME,
-            IndexName: 'statusAndEndDate',
-            KeyConditionExpression: '#status = :status',
-            ExpressionAttributeNames: {
-                '#status': 'status'
-            },
-            ExpressionAttributeValues: {
-                ':status': status
-            }
-        }).promise();
-
-        auctions = result.Items;
-
-    } catch (error) {
-        console.error(error);
-        throw new createError(500, error);
+    // Validate query string parameter 'status'
+    if (!status || !['OPEN', 'CLOSED'].includes(status)) {
+        console.error('Invalid or missing status query parameter');
+        throw new createError.BadRequest('Status query parameter is required and must be either OPEN or CLOSED');
     }
 
-    return {
-        statusCode: 201, body: JSON.stringify(auctions)
+    const tableName = process.env.AUCTIONS_TABLE_NAME;
+    if (!tableName) {
+        console.error('Environment variable AUCTIONS_TABLE_NAME is not set');
+        throw new createError.InternalServerError('Server configuration issue');
+    }
+
+    const params = {
+        TableName: tableName,
+        FilterExpression: '#status = :status',
+        ExpressionAttributeNames: { '#status': 'status' },
+        ExpressionAttributeValues: { ':status': status },
     };
+
+    try {
+        const { Items: auctions } = await dynamoDB.send(new ScanCommand(params));
+
+        if (!auctions || auctions.length === 0) {
+            console.warn('No auctions found with the specified status');
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(auctions),
+        };
+    } catch (error) {
+        console.error('Error querying the DynamoDB table:', error);
+        throw new createError.InternalServerError('Failed to fetch auctions');
+    }
 }
 
-export const handler = commonMiddleware(getAuctions)
-    .use(validator(
-        {
-            inputSchema: getAuctionsSchema,
-            ajvOptions: {
-                useDefaults: true
-            }
-        }
-    ));
+module.exports.handler = commonMiddleware(getAuctions);

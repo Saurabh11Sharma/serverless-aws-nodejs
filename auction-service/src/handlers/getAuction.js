@@ -1,40 +1,48 @@
-import AWS from 'aws-sdk';
-import commonMiddleware from "../lib/commonMiddleware";
-import createError from 'http-errors';
+require('dotenv').config();
+const createError = require('http-errors');
+const commonMiddleware = require('../lib/commonMiddleware');
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const client = require('../config/dynamoDBClient');
+const { GetCommand, DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
-export async function getAuctionById(id) {
-    let auction;
+const dynamoDB = DynamoDBDocumentClient.from(client);
 
-    try {
-        const result = await dynamoDB.get({
-            TableName: process.env.AUCTIONS_TABLE_NAME,
-            Key: {id}
-        }).promise();
+async function getAuctionById(id) {
+  const params = {
+    TableName: process.env.AUCTIONS_TABLE_NAME,
+    Key: { id }
+  };
 
-        auction = result.Item;
-    } catch (error) {
-        console.error(error);
-        throw new createError(500, error);
-    }
+  try {
+    const { Item: auction } = await dynamoDB.send(new GetCommand(params));
 
     if (!auction) {
-        throw new createError(404, `Auction with id ${id} not found`);
+      throw new createError.NotFound(`Auction with id ${id} not found`);
     }
 
     return auction;
+  } catch (error) {
+    console.error(`Failed to get auction: ${error.message || error}`);
+    throw new createError.InternalServerError(`Failed to get auction: ${error.message || error}`);
+  }
 }
 
 async function getAuction(event, context) {
+  const { id } = event.pathParameters;
 
-    const {id} = event.pathParameters;
-
+  try {
     const auction = await getAuctionById(id);
 
     return {
-        statusCode: 201, body: JSON.stringify(auction)
+      statusCode: 200,
+      body: JSON.stringify(auction),
     };
+  } catch (error) {
+    return {
+      statusCode: error.statusCode || 500,
+      body: JSON.stringify({ message: error.message }),
+    };
+  }
 }
 
-export const handler = commonMiddleware(getAuction);
+module.exports.handler = commonMiddleware(getAuction);

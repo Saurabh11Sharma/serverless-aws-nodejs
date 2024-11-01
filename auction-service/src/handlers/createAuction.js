@@ -1,46 +1,42 @@
-import AWS from 'aws-sdk';
-import {v4 as uuid} from 'uuid';
-import createError from 'http-errors';
-import validator from '@middy/validator';
+require('dotenv').config();
+const { v4: uuid } = require('uuid');
+const createError = require('http-errors');
+const commonMiddleware = require('../lib/commonMiddleware');
 
-import commonMiddleware from "../lib/commonMiddleware";
-import createAuctionSchema from "../lib/schemas/createAuctionSchema";
+const client = require('../config/dynamoDBClient');
+const { PutCommand, DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = DynamoDBDocumentClient.from(client);
 
 async function createAuction(event, context) {
-
-    const {title} = event.body;
+    const { title } = event.body;
     const now = new Date();
-    const end = new Date();
-    end.setHours(now.getHours() + 1);
 
     const auction = {
         id: uuid(),
         title,
         status: 'OPEN',
-        createAt: now.toISOString(),
-        endingAt: end.toISOString(),
-        highestBid: {
-            amount: 0,
-        }
+        createdAt: now.toISOString(),
+        amount: 0,
+        endingAt: new Date(now.getTime() + 3600000).toISOString(), // 1 hour later
+    };
+
+    const params = {
+        TableName: process.env.AUCTIONS_TABLE_NAME,
+        Item: auction,
     };
 
     try {
-        await dynamoDB.put({
-            TableName: process.env.AUCTIONS_TABLE_NAME,
-            Item: auction,
-        }).promise();
+        await dynamoDB.send(new PutCommand(params));
     } catch (error) {
-        console.error(error);
-        throw new createError(500, error);
+        console.error(`Failed to create auction: ${error.message || error}`);
+        throw new createError.InternalServerError(error);
     }
 
     return {
         statusCode: 201,
-        body: JSON.stringify(auction)
+        body: JSON.stringify(auction),
     };
 }
 
-export const handler = commonMiddleware(createAuction)
-    .use(validator({inputSchema: createAuctionSchema}));
+module.exports.handler = commonMiddleware(createAuction);

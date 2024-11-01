@@ -1,53 +1,70 @@
-import AWS from 'aws-sdk';
-import createError from 'http-errors';
-import validator from '@middy/validator';
+require('dotenv').config();
+const createError = require('http-errors')
+const validator = require('@middy/validator')
+const placeBidSchema = require('../lib/schemas/placeBidSchema.js')
+const commonMiddleware = require('../lib/commonMiddleware.js')
 
-import {getAuctionById} from "./getAuction";
-import commonMiddleware from "../lib/commonMiddleware";
-import placeBidSchema from "../lib/schemas/placeBidSchema";
+const client = require('../config/dynamoDBClient');
+const { UpdateCommand, DynamoDBDocumentClient, GetCommand} = require('@aws-sdk/lib-dynamodb')
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = DynamoDBDocumentClient.from(client);
 
-async function placeBid(event, context) {
+async function placeBid(event) {
+  const { id } = event.pathParameters;
+  const { amount } = event.body;
 
-    const {id} = event.pathParameters;
-    const {amount} = event.body;
+  const getParams = {
+    TableName: process.env.AUCTIONS_TABLE_NAME,
+    Key: { id }
+  };
 
-    const auction = await getAuctionById(id);
+  let auction;
+  try {
+    const result = await dynamoDB.send(new GetCommand(getParams));
+    auction = result.Item;
 
-    if (auction.status !== 'OPEN') {
-        throw new createError(403, `You can not bid on closed auctions!`);
+    if (!auction) {
+      throw new createError.NotFound(`Auction with ID "${id}" not found`);
     }
 
-    if (amount <= auction.highestBid.amount) {
-        throw new createError(403, `Bid must be higher than ${auction.highestBid.amount}!`);
+    if (amount <= auction.amount) {
+      throw new createError.BadRequest(
+          `Your bid must be higher than the current bid of ${auction.amount}`
+      );
     }
-
-    const params = {
-        TableName: process.env.AUCTIONS_TABLE_NAME,
-        Key: {id},
-        UpdateExpression: "set highestBid.amount = :amount",
-        ExpressionAttributeValues: {
-            ":amount": amount
-        },
-        ReturnValues: "ALL_NEW"
+  } catch (error) {
+    console.error(error);
+    if (error instanceof createError.HttpError) {
+      throw error;
+    } else {
+      throw new createError.InternalServerError(error.message);
     }
+  }
 
-    let updatedAuction;
+  const params = {
+    TableName: process.env.AUCTIONS_TABLE_NAME,
+    Key: { id },
+    UpdateExpression: 'set #amount = :amount',
+    ExpressionAttributeNames: {
+      '#amount': 'amount',
+    },
+    ExpressionAttributeValues: {
+      ':amount': amount,
+    },
+    ReturnValues: 'ALL_NEW'
+  };
 
-    try {
-        const result = await dynamoDB.update(params).promise();
-        updatedAuction = result.Attributes;
-    } catch (error) {
-        console.error(error);
-        throw new createError(500, error);
-    }
-
+  try {
+    const result = await dynamoDB.send(new UpdateCommand(params));
     return {
-        statusCode: 201,
-        body: JSON.stringify(updatedAuction)
+      statusCode: 200,
+      body: JSON.stringify(result.Attributes),
     };
+  } catch (error) {
+    console.error(error);
+    throw new createError.InternalServerError(error.message);
+  }
 }
 
-export const handler = commonMiddleware(placeBid)
-    .use(validator({inputSchema: placeBidSchema}));
+module.exports.handler = commonMiddleware(placeBid)
+  .use(validator({ inputSchema: placeBidSchema }))

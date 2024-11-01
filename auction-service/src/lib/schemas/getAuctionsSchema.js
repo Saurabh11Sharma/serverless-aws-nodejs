@@ -1,19 +1,18 @@
 const getAuctionsSchema = {
-    type: 'object',
-    properties: {
-        queryStringParameters: {
-            type: 'object',
-            properties: {
-                status: {
-                    type: 'string',
-                    enum: ['OPEN', 'CLOSED'],
-                    default: 'OPEN'
-                },
-            },
-            required: ['status']
+  type: 'object',
+  properties: {
+    queryStringParameters: {
+      type: 'object',
+      properties: {
+        status: {
+          type: 'string',
+          enum: ['OPEN', 'CLOSED']
         }
-    },
-    required: ['queryStringParameters']
+      },
+      required: ['status']
+    }
+  },
+  required: ['queryStringParameters']
 }
 
-export default getAuctionsSchema;
+module.exports = getAuctionsSchema

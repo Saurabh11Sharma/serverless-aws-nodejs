@@ -1,21 +1,30 @@
-import AWS from 'aws-sdk';
+require('dotenv').config();
 
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+const client = require('../config/dynamoDBClient');
+const { DynamoDBDocumentClient, ScanCommand} = require('@aws-sdk/lib-dynamodb');
 
-export async function getEndedAuctions() {
-    const now = new Date();
+const dynamoDB = DynamoDBDocumentClient.from(client);
+
+async function getEndedAuctions(event, context) {
     const params = {
         TableName: process.env.AUCTIONS_TABLE_NAME,
-        IndexName: 'statusAndEndDate',
-        KeyConditionExpression: '#status = :status AND endingAt <= :now',
+        FilterExpression: '#status = :status AND endingAt < :now',
         ExpressionAttributeValues: {
             ':status': 'OPEN',
-            ':now': now.toISOString()
+            ':now': new Date().toISOString(),
         },
         ExpressionAttributeNames: {
-            '#status': 'status'
-        }
+            '#status': 'status',
+        },
+    };
+
+    try {
+        const { Items: auctions } = await dynamoDB.send(new ScanCommand(params));
+        return auctions;
+    } catch (error) {
+        console.error(`Failed to fetch auctions: ${error.message || error}`);
+        throw new Error('Could not fetch auctions');
     }
-    const result = await dynamodb.query(params).promise();
-    return result.Items;
 }
+
+module.exports = getEndedAuctions;

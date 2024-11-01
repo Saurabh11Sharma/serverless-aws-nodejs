@@ -1,17 +1,15 @@
 const placeBidSchema = {
-    type: 'object',
-    properties: {
-        body: {
-            type: 'object',
-            properties: {
-                amount: {
-                    type: 'number',
-                },
-            },
-            required: ['amount']
-        }
-    },
-    required: ['body']
+  type: 'object',
+  properties: {
+    body: {
+      type: 'object',
+      properties: {
+        amount: { type: 'number' }
+      },
+      required: ['amount']
+    }
+  },
+  required: ['body']
 }
 
-export default placeBidSchema;
+module.exports = placeBidSchema

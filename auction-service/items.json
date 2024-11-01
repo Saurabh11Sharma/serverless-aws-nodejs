@@ -1,0 +1,76 @@
+{
+  "AuctionsTable": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "859b7139-eb2c-43c6-800c-b7fbef764877"
+          },
+          "title": {
+            "S": "Auction Title 1"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T12:49:01.655Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T13:49:01.655Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bf252755-34d8-4c1f-b0cf-19bb680647a2"
+          },
+          "title": {
+            "S": "Auction Title 2"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T12:49:01.655Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T13:49:01.655Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "2da37f7f-23d5-480c-8e59-fd03de6afd3a"
+          },
+          "title": {
+            "S": "Auction Title 3"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T12:49:01.656Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T13:49:01.656Z"
+          }
+        }
+      }
+    }
+  ]
+}

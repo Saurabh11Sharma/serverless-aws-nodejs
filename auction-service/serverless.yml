@@ -1,63 +1,83 @@
-org: confidentialfrog
-console: true
 service: auction-service
 
 plugins:
-  - serverless-bundle
-  - serverless-pseudo-parameters
   - serverless-offline
-  - serverless-dynamodb-local
+  - serverless-localstack
+
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs16.x
-  memorySize: 256
   stage: ${opt:stage, 'dev'}
-  region: us-east-1
+  region: ${env:AWS_REGION, 'us-east-1'}
   environment:
-    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    AUCTIONS_TABLE_NAME: ${self:custom.auctionsTable}
   iam:
     role:
       statements:
-        - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+        - Effect: Allow
+          Action: dynamodb:*
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.auctionsTable}
 
 resources:
   Resources:
-    AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
+    AuctionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.auctionsTable}
+        AttributeDefinitions:
+          - { AttributeName: id, AttributeType: S }
+          - { AttributeName: status, AttributeType: S }
+          - { AttributeName: endDate, AttributeType: N }
+        KeySchema:
+          - { AttributeName: id, KeyType: HASH }
+        GlobalSecondaryIndexes:
+          - IndexName: statusAndEndDate
+            KeySchema:
+              - { AttributeName: status, KeyType: HASH }
+              - { AttributeName: endDate, KeyType: RANGE }
+            Projection:
+              ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
 
 functions:
   createAuction:
     handler: src/handlers/createAuction.handler
     events:
       - http:
-          method: POST
+          method: post
           path: /auction
   getAuctions:
     handler: src/handlers/getAuctions.handler
     events:
       - http:
-          method: GET
+          method: get
           path: /auctions
   getAuction:
     handler: src/handlers/getAuction.handler
     events:
       - http:
-          method: GET
+          method: get
           path: /auction/{id}
   placeBid:
     handler: src/handlers/placeBid.handler
     events:
       - http:
-          method: PATCH
-          path: auction/{id}/bid
+          method: patch
+          path: /auction/{id}/bid
   processAuctions:
     handler: src/handlers/processAuctions.handler
-#    events:
-#      - schedule: rate(1 minute)
+    events:
+      - schedule:
+          rate: rate(1 minute)
 
 custom:
-  AuctionsTable:
-    name: !Ref AuctionsTable
-    arn: !GetAtt AuctionsTable.Arn
-  bundle:
-    linting: false
+  auctionsTable: AuctionsTable
+  localstack:
+    stages: [local]
+    autostart: true
+    endpoints:
+      DynamoDB: ${env:DYNAMODB_ENDPOINT, 'http://localhost:4566'}

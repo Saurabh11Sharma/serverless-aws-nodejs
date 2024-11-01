@@ -1,17 +1,24 @@
-import createError from "http-errors";
-import {getEndedAuctions} from "../lib/getEndedAuctions";
-import {closeAuction} from "../lib/closeAuction";
+require('dotenv').config();
+const createError = require('http-errors')
 
-async function processAuctions(event, context) {
-    try {
-        const auctionsToClose = await getEndedAuctions();
-        const closePromises = auctionsToClose.map(auction => closeAuction(auction));
-        await Promise.all(closePromises);
-        return {close: closePromises.length};
-    } catch (error) {
-        console.log(error);
-        throw new createError(500, error);
-    }
+const closeAuction = require('../lib/closeAuction.js')
+const getEndedAuctions  = require('../lib/getEndedAuctions');
+
+async function processAuctions (event, context) {
+  try {
+    const auctionsToClose = await getEndedAuctions();
+
+    console.log(`Closing ${auctionsToClose.length} auctions`)
+
+    const closePromises = auctionsToClose.map((auction) => closeAuction(auction))
+
+    await Promise.all(closePromises)
+
+    return { closed: auctionsToClose.length }
+  } catch (error) {
+    console.error(error)
+    throw new createError.InternalServerError(error)
+  }
 }
 
-export const handler = processAuctions;
+module.exports.handler = processAuctions
