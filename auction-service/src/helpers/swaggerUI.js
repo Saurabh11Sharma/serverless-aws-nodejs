@@ -2,22 +2,22 @@ const fs = require('fs');
 const path = require('path');
 
 async function swaggerUI() {
-  const swaggerFilePath = path.join(__dirname, '..', '..', 'swagger.json');
+    const swaggerFilePath = path.join(__dirname, '..', '..', 'swagger.json');
 
-  let swaggerJson;
-  try {
-    const swaggerContent = fs.readFileSync(swaggerFilePath, 'utf8');
-    swaggerJson = JSON.parse(swaggerContent);
-  } catch (error) {
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: 'Error reading or parsing swagger.json', error: error.message })
-    };
-  }
+    let swaggerJson;
+    try {
+        const swaggerContent = fs.readFileSync(swaggerFilePath, 'utf8');
+        swaggerJson = JSON.parse(swaggerContent);
+    } catch (error) {
+        return {
+            statusCode: 500,
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: 'Error reading or parsing swagger.json', error: error.message})
+        };
+    }
 
-  const swaggerSpec = JSON.stringify(swaggerJson);
-  const html = `
+    const swaggerSpec = JSON.stringify(swaggerJson);
+    const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -39,11 +39,11 @@ async function swaggerUI() {
     </html>
   `;
 
-  return {
-    statusCode: 200,
-    headers: { "Content-Type": "text/html" },
-    body: html
-  };
+    return {
+        statusCode: 200,
+        headers: {"Content-Type": "text/html"},
+        body: html
+    };
 }
 
 module.exports.handler = swaggerUI;

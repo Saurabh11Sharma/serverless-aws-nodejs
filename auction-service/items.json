@@ -4,7 +4,7 @@
       "PutRequest": {
         "Item": {
           "id": {
-            "S": "859b7139-eb2c-43c6-800c-b7fbef764877"
+            "S": "fb6ba176-8a33-410e-b9e2-c5dc42e9f971"
           },
           "title": {
             "S": "Auction Title 1"
@@ -13,13 +13,13 @@
             "S": "OPEN"
           },
           "createdAt": {
-            "S": "2024-11-01T12:49:01.655Z"
+            "S": "2024-11-01T17:28:50.009Z"
           },
           "amount": {
             "N": "0"
           },
           "endingAt": {
-            "S": "2024-11-01T13:49:01.655Z"
+            "S": "2024-11-01T18:28:50.009Z"
           }
         }
       }
@@ -28,7 +28,7 @@
       "PutRequest": {
         "Item": {
           "id": {
-            "S": "bf252755-34d8-4c1f-b0cf-19bb680647a2"
+            "S": "65254704-1cbb-43fe-8bfc-d3affc8b03c0"
           },
           "title": {
             "S": "Auction Title 2"
@@ -37,13 +37,13 @@
             "S": "OPEN"
           },
           "createdAt": {
-            "S": "2024-11-01T12:49:01.655Z"
+            "S": "2024-11-01T17:28:50.010Z"
           },
           "amount": {
             "N": "0"
           },
           "endingAt": {
-            "S": "2024-11-01T13:49:01.655Z"
+            "S": "2024-11-01T18:28:50.010Z"
           }
         }
       }
@@ -52,7 +52,7 @@
       "PutRequest": {
         "Item": {
           "id": {
-            "S": "2da37f7f-23d5-480c-8e59-fd03de6afd3a"
+            "S": "7286afb6-30be-43e9-a833-7e3541fa92e7"
           },
           "title": {
             "S": "Auction Title 3"
@@ -61,13 +61,181 @@
             "S": "OPEN"
           },
           "createdAt": {
-            "S": "2024-11-01T12:49:01.656Z"
+            "S": "2024-11-01T17:28:50.010Z"
           },
           "amount": {
             "N": "0"
           },
           "endingAt": {
-            "S": "2024-11-01T13:49:01.656Z"
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "6c7bdb69-fbc4-42f2-ae00-d7c42cb4f8b3"
+          },
+          "title": {
+            "S": "Auction Title 4"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "48a41733-93a0-4c6d-ae0d-985b0ec78537"
+          },
+          "title": {
+            "S": "Auction Title 5"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "ce794fb5-74ab-4368-8d4f-e58babc02df4"
+          },
+          "title": {
+            "S": "Auction Title 6"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "2a2e792e-ba62-4d74-8ff4-f49191fe89a5"
+          },
+          "title": {
+            "S": "Auction Title 7"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "74f9dc24-3241-4a6b-bbc8-22fb4c74b61c"
+          },
+          "title": {
+            "S": "Auction Title 8"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "a896d3e3-2f39-4bf5-9290-703b24f06452"
+          },
+          "title": {
+            "S": "Auction Title 9"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "3a51005e-9ac7-4a24-84e0-a64ffcc96260"
+          },
+          "title": {
+            "S": "Auction Title 10"
+          },
+          "status": {
+            "S": "OPEN"
+          },
+          "createdAt": {
+            "S": "2024-11-01T17:28:50.010Z"
+          },
+          "amount": {
+            "N": "0"
+          },
+          "endingAt": {
+            "S": "2024-11-01T18:28:50.010Z"
           }
         }
       }

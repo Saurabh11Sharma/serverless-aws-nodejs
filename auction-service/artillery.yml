@@ -1,5 +1,5 @@
 config:
-  target: "http://localhost:3000/dev"
+  target: "http://localhost:3000"
   phases:
     - duration: 60
       arrivalRate: 5
@@ -14,8 +14,8 @@ config:
     headers:
       Content-Type: "application/json"
   reports:
-    # Enable the creation of a JUnit-formatted XML report
-    writer: @artillery/junit
+    writer: "@artillery/junit"
+
 scenarios:
   - name: "Create Auction"
     flow:
@@ -40,7 +40,14 @@ scenarios:
       - get:
           url: "/auction/{{ auctionId }}"
           expect:
-            statusCode: 200
+            - statusCode: 200
+            - contentType: "application/json"
+            - json:
+                createdAt: /.+/
+                endingAt: /.+/
+                amount: 0
+                id: "{{ auctionId }}"
+                status: "OPEN"
       - log: "Fetched Auction with ID {{ auctionId }}"
 
   - name: "Place Bid"
@@ -56,7 +63,11 @@ scenarios:
           json:
             amount: "{{ amount }}"
           expect:
-            statusCode: 200
+            - statusCode: 200
+            - contentType: "application/json"
+            - json:
+                message: "Bid placed successfully"
+                newAmount: "{{ amount }}"
       - log: "Placed a bid of {{ amount }} on Auction with ID {{ auctionId }}"
 
   - name: "Get All Auctions"
@@ -66,7 +77,26 @@ scenarios:
       - get:
           url: "/auctions?status=OPEN"
           expect:
-            statusCode: 200
+            - statusCode: 200
+            - contentType: "application/json"
+            - jsonSchema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    id:
+                      type: "string"
+                    title:
+                      type: "string"
+                    createdAt:
+                      type: "string"
+                    endingAt:
+                      type: "string"
+                    amount:
+                      type: "number"
+                    status:
+                      type: "string"
+                  required: ["id", "title", "createdAt", "endingAt", "amount", "status"]
           capture:
             - json: "$[0].id"
               as: "auctionId"

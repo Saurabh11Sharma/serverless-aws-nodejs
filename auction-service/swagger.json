@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/dev"
+      "url": "http://localhost:3000/"
     }
   ],
   "components": {
@@ -39,7 +39,10 @@
           },
           "status": {
             "type": "string",
-            "enum": ["OPEN", "CLOSED"],
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
             "example": "OPEN"
           }
         }
@@ -62,25 +65,27 @@
                     "example": "Auction_xyz123"
                   }
                 },
-                "required": ["title"]
+                "required": [
+                  "title"
+                ]
               }
             }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Auction created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Auction"
-                },
-                "example": {
-                  "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
-                  "status": "OPEN",
-                  "createdAt": "2024-11-01T16:56:34.901Z",
-                  "amount": 0,
-                  "endingAt": "2024-11-01T17:56:34.901Z"
+          },
+          "responses": {
+            "200": {
+              "description": "Auction created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Auction"
+                  },
+                  "example": {
+                    "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+                    "status": "OPEN",
+                    "createdAt": "2024-11-01T16:56:34.901Z",
+                    "amount": 0,
+                    "endingAt": "2024-11-01T17:56:34.901Z"
+                  }
                 }
               }
             }
@@ -149,25 +154,34 @@
                     "example": 152
                   }
                 },
-                "required": ["amount"]
+                "required": [
+                  "amount"
+                ]
               }
             }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Bid placed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Auction"
-                },
-                "example": {
-                  "createdAt": "2024-11-01T16:56:34.901Z",
-                  "endingAt": "2024-11-01T17:56:34.901Z",
-                  "amount": 152,
-                  "id": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
-                  "status": "OPEN"
+          },
+          "responses": {
+            "200": {
+              "description": "Bid placed successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Bid placed successfully"
+                      },
+                      "newAmount": {
+                        "type": "number",
+                        "example": 153
+                      }
+                    }
+                  },
+                  "example": {
+                    "message": "Bid placed successfully",
+                    "newAmount": 153
+                  }
                 }
               }
             }
@@ -185,7 +199,10 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["OPEN", "CLOSED"],
+              "enum": [
+                "OPEN",
+                "CLOSED"
+              ],
               "default": "OPEN",
               "example": "OPEN"
             },

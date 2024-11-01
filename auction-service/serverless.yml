@@ -1,18 +1,23 @@
 service: auction-service
 
+# Plugins
 plugins:
   - serverless-offline
   - serverless-localstack
 
+# Environment Variables
 useDotenv: true
 
+# Provider Configuration
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs16.x  # Update to a supported runtime if Node.js 16.x is deprecated
   stage: ${opt:stage, 'dev'}
   region: ${env:AWS_REGION, 'us-east-1'}
   environment:
     AUCTIONS_TABLE_NAME: ${self:custom.auctionsTable}
+
+  # IAM Role Permissions
   iam:
     role:
       statements:
@@ -20,6 +25,7 @@ provider:
           Action: dynamodb:*
           Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.auctionsTable}
 
+# Resources
 resources:
   Resources:
     AuctionsTable:
@@ -39,56 +45,61 @@ resources:
               - { AttributeName: endDate, KeyType: RANGE }
             Projection:
               ProjectionType: ALL
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST  # Update to on-demand to avoid specifying RCU/WCU
 
+# Functions
 functions:
   createAuction:
     handler: src/handlers/createAuction.handler
     events:
-      - http:
-          method: post
+      - httpApi: # Use httpApi for improved performance and lower cost
+          method: POST
           path: /auction
           cors: true
+
   getAuctions:
     handler: src/handlers/getAuctions.handler
     events:
-      - http:
-          method: get
+      - httpApi:
+          method: GET
           path: /auctions
           cors: true
+
   getAuction:
     handler: src/handlers/getAuction.handler
     events:
-      - http:
-          method: get
+      - httpApi:
+          method: GET
           path: /auction/{id}
           cors: true
+
   placeBid:
     handler: src/handlers/placeBid.handler
     events:
-      - http:
-          method: patch
+      - httpApi:
+          method: PATCH
           path: /auction/{id}/bid
           cors: true
+
   processAuctions:
     handler: src/handlers/processAuctions.handler
     events:
       - schedule:
           rate: rate(1 minute)
+
   swaggerUI:
     handler: src/helpers/swaggerUI.handler
     events:
-      - http:
+      - httpApi:
           path: /api-docs
-          method: get
+          method: GET
           cors: true
 
+# Custom Configuration
 custom:
   auctionsTable: AuctionsTable
   localstack:
-    stages: [local]
+    stages: [ local ]
     autostart: true
     endpoints:
       DynamoDB: ${env:DYNAMODB_ENDPOINT, 'http://localhost:4566'}
