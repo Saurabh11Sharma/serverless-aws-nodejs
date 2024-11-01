@@ -8,5 +8,5 @@ jspm_packages
 # Webpack directories
 .webpack
 
-# environment
+# Environment
 .env

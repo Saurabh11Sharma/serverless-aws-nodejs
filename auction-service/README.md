@@ -170,16 +170,14 @@ To scan the DynamoDB Table:
 aws dynamodb scan --table-name AuctionsTable --limit 5 --endpoint-url=http://localhost:4566
 ```
 OR
-
 ```sh
 aws dynamodb scan --table-name AuctionsTable --endpoint-url http://localhost:4566
 ```
 
-### Final Command Set to Start
+### One Single Command To Execute Above Command At Once
 ```sh
 docker run --rm -p 4566:4566 -d -e SERVICES=lambda,dynamodb -e DEBUG=1 localstack/localstack; Start-Sleep -Seconds 10; aws dynamodb create-table --table-name AuctionsTable --attribute-definitions AttributeName=id,AttributeType=S AttributeName=status,AttributeType=S AttributeName=endDate,AttributeType=N --key-schema AttributeName=id,KeyType=HASH --global-secondary-indexes '[{\"IndexName\": \"statusAndEndDate\",\"KeySchema\":[{\"AttributeName\":\"status\",\"KeyType\":\"HASH\"},{\"AttributeName\":\"endDate\",\"KeyType\":\"RANGE\"}],\"Projection\":{\"ProjectionType\":\"ALL\"},\"ProvisionedThroughput\":{\"ReadCapacityUnits\":5,\"WriteCapacityUnits\":5}}]' --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url=http://localhost:4566; Start-Sleep -Seconds 5; aws dynamodb batch-write-item --request-items file://items.json --endpoint-url=http://localhost:4566; Start-Sleep -Seconds 5; aws dynamodb scan --table-name AuctionsTable --limit 5 --endpoint-url=http://localhost:4566; Start-Sleep -Seconds 5; npm run start
 ```
-
 
 ### Command to stop docker container
 ```sh

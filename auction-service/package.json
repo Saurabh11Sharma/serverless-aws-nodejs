@@ -7,11 +7,6 @@
   "scripts": {
     "start": "serverless offline"
   },
-  "devDependencies": {
-    "serverless-localstack": "^1.2.1",
-    "serverless-offline": "^8.8.1",
-    "webpack": "^5.73.0"
-  },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.682.0",
     "@aws-sdk/lib-dynamodb": "^3.682.0",
@@ -24,5 +19,9 @@
     "http-errors": "^2.0.0",
     "serverless": "^3.19.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "serverless-localstack": "^1.2.1",
+    "serverless-offline": "^8.8.1"
   }
 }
