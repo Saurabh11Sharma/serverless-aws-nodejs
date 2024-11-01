@@ -1,11 +1,12 @@
-# Notification Service
+# Auth Service
 
 ## Overview
-This service will manage the notifications for our application.
+This service will handle all authentication and authorization-related functionalities.
 
 ## Features (To be added)
-- Sending email notifications
-- Sending SMS notifications
+- User registration
+- User login
+- Token generation and validation
 
 ## Setup and Configuration
 Details will be added once implementation begins.
