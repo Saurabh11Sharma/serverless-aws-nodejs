@@ -2,11 +2,11 @@
 node_modules
 jspm_packages
 
-# environment
-.env
-
 # Serverless directories
 .serverless
 
 # Webpack directories
 .webpack
+
+# environment
+.env
