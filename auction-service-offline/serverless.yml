@@ -1,0 +1,90 @@
+service: auction-service
+
+# Plugins
+plugins:
+  - serverless-offline
+
+# Environment Variables
+useDotenv: true
+
+# Provider Configuration
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  environment:
+    AUCTIONS_TABLE_NAME: ${env:AUCTIONS_TABLE_NAME}
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
+
+  # IAM Role Permissions
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: dynamodb:*
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.AUCTIONS_TABLE_NAME}
+
+# Resources
+resources:
+  Resources:
+    AuctionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.AUCTIONS_TABLE_NAME}
+        AttributeDefinitions:
+          - { AttributeName: id, AttributeType: S }
+          - { AttributeName: status, AttributeType: S }
+          - { AttributeName: endDate, AttributeType: N }
+        KeySchema:
+          - { AttributeName: id, KeyType: HASH }
+        GlobalSecondaryIndexes:
+          - IndexName: statusAndEndDate
+            KeySchema:
+              - { AttributeName: status, KeyType: HASH }
+              - { AttributeName: endDate, KeyType: RANGE }
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST  # Update to on-demand to avoid specifying RCU/WCU
+
+# Functions
+functions:
+  createAuction:
+    handler: src/handlers/createAuction.handler
+    events:
+      - httpApi: # Use httpApi for improved performance and lower cost
+          method: POST
+          path: /auction
+          cors: true
+
+  getAuctions:
+    handler: src/handlers/getAuctions.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /auctions
+          cors: true
+
+  getAuction:
+    handler: src/handlers/getAuction.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /auction/{id}
+          cors: true
+
+  placeBid:
+    handler: src/handlers/placeBid.handler
+    events:
+      - httpApi:
+          method: PATCH
+          path: /auction/{id}/bid
+          cors: true
+
+  processAuctions:
+    handler: src/handlers/processAuctions.handler
+    events:
+      - schedule:
+          rate: rate(1 minute)

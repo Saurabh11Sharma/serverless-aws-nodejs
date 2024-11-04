@@ -1,0 +1,23 @@
+{
+  "name": "auction-service",
+  "version": "1.0.1",
+  "description": "Serverless Framework POC using AWS and DynamoDB",
+  "author": "Saurabh Sharma <saurabh11sharma@live.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "serverless offline start"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.682.0",
+    "@aws-sdk/lib-dynamodb": "^3.682.0",
+    "@middy/core": "^3.6.2",
+    "@middy/http-error-handler": "^3.0.4",
+    "@middy/http-event-normalizer": "^3.0.4",
+    "@middy/http-json-body-parser": "^3.0.4",
+    "@middy/validator": "^3.6.2",
+    "http-errors": "^2.0.0",
+    "serverless": "^4.4.7",
+    "serverless-offline": "^14.3.3",
+    "uuid": "^11.0.2"
+  }
+}

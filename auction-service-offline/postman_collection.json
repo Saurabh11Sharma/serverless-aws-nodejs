@@ -1,0 +1,243 @@
+{
+  "info": {
+    "name": "Auction Service",
+    "description": "API Endpoints for managing auctions",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Auction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Auction_xyz123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/auction",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "auction"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Auction_xyz123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/auction",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auction"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"id\": \"a56da6e7-4aa5-4a48-9b74-653ef439e6ef\",\n  \"status\": \"OPEN\",\n  \"createdAt\": \"2024-11-01T16:56:34.901Z\",\n  \"amount\": 0,\n  \"endingAt\": \"2024-11-01T17:56:34.901Z\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Auction by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/auction/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "auction",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/auction/a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auction",
+                "a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"createdAt\": \"2024-11-01T16:56:34.901Z\",\n  \"endingAt\": \"2024-11-01T17:56:34.901Z\",\n  \"amount\": 0,\n  \"id\": \"a56da6e7-4aa5-4a48-9b74-653ef439e6ef\",\n  \"status\": \"OPEN\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Place Bid",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 152\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/auction/:id/bid",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "auction",
+            ":id",
+            "bid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "a56da6e7-4aa5-4a48-9b74-653ef439e6ef"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 152\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/auction/a56da6e7-4aa5-4a48-9b74-653ef439e6ef/bid",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auction",
+                "a56da6e7-4aa5-4a48-9b74-653ef439e6ef",
+                "bid"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"message\": \"Bid placed successfully\",\n  \"newAmount\": 153\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get All Auctions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/auctions?status=OPEN",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "auctions"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "OPEN",
+              "description": "Filter by status (OPEN or CLOSED)"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/auctions?status=OPEN",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auctions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "OPEN",
+                  "description": "Filter by status (OPEN or CLOSED)"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "[\n  {\n    \"createdAt\": \"2024-11-01T16:56:34.901Z\",\n    \"endingAt\": \"2024-11-01T17:56:34.901Z\",\n    \"amount\": 0,\n    \"id\": \"a56da6e7-4aa5-4a48-9b74-653ef439e6ef\",\n    \"status\": \"OPEN\"\n  },\n  {\n    \"createdAt\": \"2024-11-01T16:56:33.925Z\",\n    \"endingAt\": \"2024-11-01T17:56:33.925Z\",\n    \"amount\": 0,\n    \"id\": \"0e93f1a9-66fe-40c7-aa3a-1aae64103f1c\",\n    \"status\": \"OPEN\"\n  }\n]"
+        }
+      ]
+    }
+  ]
+}
